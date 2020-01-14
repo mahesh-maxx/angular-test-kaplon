@@ -1,8 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule,APP_INITIALIZER } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ScheduleProvider } from './schedule.provider';
+
+export function scheduleProviderFactory(provider: ScheduleProvider) {
+  return () => provider.loadSchedule();
+}
 
 @NgModule({
   declarations: [
@@ -10,9 +17,10 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ScheduleProvider,{provide: APP_INITIALIZER, useFactory: scheduleProviderFactory, deps: [ScheduleProvider], multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
